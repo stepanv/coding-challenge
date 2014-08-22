@@ -1,21 +1,37 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
-  <modelVersion>4.0.0</modelVersion>
-  <groupId>net.uvavru.amazon</groupId>
-  <artifactId>code-challenge</artifactId>
-  <packaging>war</packaging>
-  <version>1.0-SNAPSHOT</version>
-  <name>code-challenge Maven Webapp</name>
-  <url>http://maven.apache.org</url>
-  <dependencies>
-    <dependency>
-      <groupId>junit</groupId>
-      <artifactId>junit</artifactId>
-      <version>3.8.1</version>
-      <scope>test</scope>
-    </dependency>
-  </dependencies>
-  <build>
-    <finalName>code-challenge</finalName>
-  </build>
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>net.uvavru.amazon</groupId>
+    <artifactId>code-challenge</artifactId>
+    <packaging>jar</packaging>
+    <version>1.0-SNAPSHOT</version>
+
+    <name>Amazon code-challenge Maven app</name>
+    <description>
+
+        Amazon coding challenge.
+
+        There is nothing to run except for the tests.
+
+        This is an implementation of Single Linked List data structure which might be used anywhere else.
+
+        The implemented SingleLinkedList can be used in similar manner as standard java.util library data structures.
+        It does not however bring any additional functionality such as iterators nor it is serializable or cloneable.
+
+    </description>
+
+    <build>
+        <finalName>code-challenge</finalName>
+    </build>
+
+    <dependencies>
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <version>4.11</version>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
+
 </project>
