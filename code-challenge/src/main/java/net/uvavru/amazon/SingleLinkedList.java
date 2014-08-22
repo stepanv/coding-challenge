@@ -120,5 +120,32 @@ public class SingleLinkedList<T> {
         first = previousNode;
     }
 
+    private void swapFirstLast() {
+        Node<T> swap = last;
+        last = first;
+        first = swap;
+    }
+
+    public void reverseRecursively() {
+        if (first == null || first == last) {
+            return;
+        }
+
+        swapFirstLast();
+
+        reverse(last);
+
+        // fix the last
+        last.next = null;
+    }
+
+    private void reverse(Node<T> node) {
+        if (node.next.next != null) {
+            reverse(node.next);
+        }
+
+        // next of the next one should point at current node
+        node.next.next = node;
+    }
 
 }
