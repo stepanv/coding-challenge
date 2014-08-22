@@ -163,4 +163,63 @@ public class SingleLinkedListTest extends AbstractSingleLinkedListTest {
         thrown.expect(IndexOutOfBoundsException.class);
         list.get(3);
     }
+
+    @Test
+    public void removeTest() {
+        // create the array
+        Integer[] intArray = new Integer[]{0, 1};
+        AdvancedSingleLinkedList<Integer> list = new AdvancedSingleLinkedList<Integer>(intArray);
+        assertAll(list, intArray);
+
+        // remove the first item
+        assertEquals(0, (int) list.remove(0));
+        assertEquals((int) list.first.data, 1);
+        assertEquals(list.first.next, null);
+        assertEquals((int) list.last.data, 1);
+        assertEquals(list.first.data, list.last.data);
+        assertEquals((int) list.get(0), 1);
+
+        assertEquals((int) list.getFirst(), 1);
+        assertEquals((int) list.getLast(), 1);
+
+        thrown.expect(IndexOutOfBoundsException.class);
+        list.remove(1);
+    }
+
+    /**
+     * Second removal test.
+     */
+    @Test
+    public void remove2Test() {
+        // create the array
+        Integer[] intArray = new Integer[]{0, 1, 2};
+        AdvancedSingleLinkedList<Integer> list = new AdvancedSingleLinkedList<Integer>(intArray);
+        assertAll(list, intArray);
+
+        // remove the middle item
+        assertEquals(1, (int) list.remove(1));
+        assertEquals((int) list.first.data, 0);
+        assertEquals((int) list.first.next.data, 2);
+        assertEquals((int) list.last.data, 2);
+        assertEquals(list.first.next, list.last);
+        assertEquals((int) list.get(0), 0);
+        assertEquals((int) list.get(1), 2);
+        assertNull(list.first.next.next);
+
+        assertEquals((int) list.getFirst(), 0);
+        assertEquals((int) list.getLast(), 2);
+        assertEquals(2, list.size());
+
+        // remove the last item
+        assertEquals(2, (int) list.remove(1));
+        assertEquals(list.first, list.last);
+        assertEquals(1, list.size());
+        assertEquals((int) list.getFirst(), 0);
+        assertEquals((int) list.getLast(), 0);
+
+        thrown.expect(IndexOutOfBoundsException.class);
+        list.remove(-1);
+    }
+
+
 }
