@@ -102,17 +102,22 @@ public class SingleLinkedList<T> {
             return;
         }
 
+        // there are at least 2 nodes
+
         Node previousNode = first;
         Node currentNode = first.next;
         previousNode.next = null;
+        last = first;
 
-        while (currentNode.next != null) {
-            Node nextNode = currentNode.next;
+        while (currentNode != null) {
+            Node<T> nextNode = currentNode.next;
             currentNode.next = previousNode;
 
             previousNode = currentNode;
-            currentNode = currentNode.next;
+            currentNode = nextNode;
         }
+
+        first = previousNode;
     }
 
 

@@ -12,15 +12,7 @@ import static org.junit.Assert.assertNull;
 /**
  * Created by stepan on 22.8.2014.
  */
-public class SingleLinkedListTest {
-
-    private <T extends Number> void assertAll(SingleLinkedList<T> list, T[] array) {
-        for (T item : array) {
-            assertEquals(list.get(item.intValue()).toString(), item.toString());
-        }
-
-        assertEquals(list.size, array.length);
-    }
+public class SingleLinkedListTest extends AbstractSingleLinkedListTest {
 
     @Test
     public void constructionTest() {
