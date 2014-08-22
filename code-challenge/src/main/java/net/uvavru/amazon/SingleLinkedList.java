@@ -8,7 +8,7 @@ package net.uvavru.amazon;
  * Unless sub-classed, this class does not provide a way to modify the list (except for reverse
  * actions).
  * <p/>
- * This data structure does not intentionally implement any of common <code>java.lang</code>
+ * This data structure does not intentionally implement any of common <code>java.util</code>
  * collection interfaces because it was not simply an assignment.
  * <p/>
  * Created by stepan on 22.8.2014.
