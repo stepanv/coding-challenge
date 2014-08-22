@@ -20,15 +20,15 @@ public class SingleLinkedListTest extends AbstractSingleLinkedListTest {
     @Test
     public void constructionTest() {
         Integer[] intArray = new Integer[]{0, 1, 2};
-        SingleLinkedList<Integer> list = new SingleLinkedList<Integer>(intArray);
+        AdvancedSingleLinkedList<Integer> list = new AdvancedSingleLinkedList<Integer>(intArray);
         assertAll(list, intArray);
 
         intArray = new Integer[]{};
-        list = new SingleLinkedList<Integer>(intArray);
+        list = new AdvancedSingleLinkedList<Integer>(intArray);
         assertAll(list, intArray);
 
         intArray = new Integer[]{0};
-        list = new SingleLinkedList<Integer>(intArray);
+        list = new AdvancedSingleLinkedList<Integer>(intArray);
         assertAll(list, intArray);
 
     }
@@ -39,7 +39,7 @@ public class SingleLinkedListTest extends AbstractSingleLinkedListTest {
     @Test
     public void iterativeConstructionTest() {
         Integer[] intArray = new Integer[]{0, 1, 2};
-        SingleLinkedList<Integer> list = new SingleLinkedList<Integer>();
+        AdvancedSingleLinkedList<Integer> list = new AdvancedSingleLinkedList<Integer>();
         list.add(0);
         assertEquals(list.size, 1);
         assertEquals((int) list.last.data, 0);
@@ -67,7 +67,7 @@ public class SingleLinkedListTest extends AbstractSingleLinkedListTest {
      */
     @Test
     public void zeroLength() {
-        SingleLinkedList<Integer> list = new SingleLinkedList<Integer>();
+        AdvancedSingleLinkedList<Integer> list = new AdvancedSingleLinkedList<Integer>();
 
         assertNull(list.getLast());
         assertNull(list.getFirst());
@@ -81,7 +81,7 @@ public class SingleLinkedListTest extends AbstractSingleLinkedListTest {
      */
     @Test
     public void oneLength() {
-        SingleLinkedList<Integer> list = new SingleLinkedList<Integer>(new Integer[]{1});
+        AdvancedSingleLinkedList<Integer> list = new AdvancedSingleLinkedList<Integer>(new Integer[]{1});
 
         assertEquals(list.getFirst(), list.getLast());
 
@@ -99,7 +99,7 @@ public class SingleLinkedListTest extends AbstractSingleLinkedListTest {
      */
     @Test
     public void twoLength() {
-        SingleLinkedList<Integer> list = new SingleLinkedList<Integer>(new Integer[]{1, 2});
+        AdvancedSingleLinkedList<Integer> list = new AdvancedSingleLinkedList<Integer>(new Integer[]{1, 2});
 
         assertNotEquals(list.getFirst(), list.getLast());
 
@@ -123,7 +123,7 @@ public class SingleLinkedListTest extends AbstractSingleLinkedListTest {
     public void complexPlayTest() {
         // create the array
         Integer[] intArray = new Integer[]{0, 1};
-        SingleLinkedList<Integer> list = new SingleLinkedList<Integer>(intArray);
+        AdvancedSingleLinkedList<Integer> list = new AdvancedSingleLinkedList<Integer>(intArray);
         assertAll(list, intArray);
 
         // change the first item

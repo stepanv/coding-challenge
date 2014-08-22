@@ -1,102 +1,32 @@
 package net.uvavru.amazon;
 
 /**
+ * The core Single Linked List data structure with separated implementation of functionality
+ * specified in the Amazon's assignment. The purpose of such extraction is to provide an easy
+ * orientation in the core functionality.
+ * <p/>
+ * Unless sub-classed, this class does not provide a way to modify the list (except for reverse
+ * actions).
+ * <p/>
+ * This data structure does not intentionally implement any of common <code>java.lang</code>
+ * collection interfaces because it was not simply an assignment.
+ * <p/>
  * Created by stepan on 22.8.2014.
+ *
+ * @param <T> The type of content to use with this list data structure.
  */
-public class SingleLinkedList<T> {
+public class SingleLinkedList<T> implements AmazonAssignment {
 
+    /**
+     * The first Node of the linked list
+     */
     Node<T> first;
+    /**
+     * The last Node of the linked list declared for convenience reasons
+     */
     Node<T> last;
 
-    int size = 0;
-
-    public SingleLinkedList() {
-
-    }
-
-    public SingleLinkedList(T[] array) {
-        if (array == null || array.length == 0) {
-            return;
-        }
-
-        first = new Node<T>(array[0]);
-        last = first;
-        Node previousNode = first;
-        size = 1;
-
-        for (; size < array.length; size++) {
-            last = new Node<T>(array[size]);
-            previousNode.next = last;
-
-            previousNode = last;
-        }
-    }
-
-    Node<T> node(int index) {
-        if (index >= size) {
-            throw new IndexOutOfBoundsException("Index " + index + " greater or equal to the size of list");
-        }
-
-        Node<T> desired = first;
-        for (int i = 0; i < index; i++) {
-            desired = desired.next;
-        }
-        return desired;
-
-    }
-
-    public T getFirst() {
-        return first != null ? first.data : null;
-    }
-
-    public T get(int index) {
-        Node<T> node = node(index);
-
-        return node != null ? node.data : null;
-    }
-
-    public T getLast() {
-        return last != null ? last.data : null;
-    }
-
-    public void setFirst(T value) {
-        first = new Node<T>(value);
-    }
-
-    public void set(int index, T value) {
-        Node<T> node = node(index);
-        node.data = value;
-    }
-
-    public void add(T value) {
-        Node<T> node = new Node<T>(value);
-
-        if (last == null) {
-            assert first == null;
-
-            first = node;
-            last = first;
-        } else {
-            assert first != null;
-
-            last.next = node;
-            last = node;
-        }
-
-        size++;
-    }
-
-
-    static class Node<T> {
-        Node<T> next;
-        T data;
-
-        public Node(T data) {
-            this.data = data;
-        }
-
-    }
-
+    @Override
     public void reverseIteratively() {
         if (first == null || first.next == null) {
             return;
@@ -120,12 +50,16 @@ public class SingleLinkedList<T> {
         first = previousNode;
     }
 
+    /**
+     * A helper method to swap the 'pointers' to the first and the last node.
+     */
     private void swapFirstLast() {
         Node<T> swap = last;
         last = first;
         first = swap;
     }
 
+    @Override
     public void reverseRecursively() {
         if (first == null || first == last) {
             return;
@@ -139,6 +73,14 @@ public class SingleLinkedList<T> {
         last.next = null;
     }
 
+    /**
+     * The recursion method itself.
+     * <p/>
+     * The idea of this recursion is at first to iterate by using recursion to the last pair of Nodes
+     * and then to make the next of the current one point to the current one.
+     *
+     * @param node The node to which the next node should point to.
+     */
     private void reverse(Node<T> node) {
         if (node.next.next != null) {
             reverse(node.next);
@@ -148,4 +90,30 @@ public class SingleLinkedList<T> {
         node.next.next = node;
     }
 
+    /**
+     * Package local (and therefore testable) class that represents a single node in the
+     * Single Linked List data structure.
+     *
+     * @param <T> The associated data with this node (as well as with the whole list).
+     */
+    static class Node<T> {
+        /**
+         * The next node, can be null
+         */
+        Node<T> next;
+        /**
+         * Associated data
+         */
+        T data;
+
+        /**
+         * Creates the node.
+         *
+         * @param data The associated data.
+         */
+        public Node(T data) {
+            this.data = data;
+        }
+
+    }
 }

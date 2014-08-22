@@ -72,7 +72,7 @@ public class SingleLinkedListReverseTest extends AbstractSingleLinkedListTest {
      * @param action The reverse action
      */
     private void simpleReverse(ReverseAction action) {
-        SingleLinkedList<Integer> list = new SingleLinkedList<Integer>();
+        AdvancedSingleLinkedList<Integer> list = new AdvancedSingleLinkedList<Integer>();
         list.reverseIteratively();
 
         list.add(1);
@@ -124,7 +124,7 @@ public class SingleLinkedListReverseTest extends AbstractSingleLinkedListTest {
      * @param intArray An array that corresponds with the list
      * @param action   The reverse action
      */
-    private void doubleReverseCheck(SingleLinkedList<Integer> list, Integer[] intArray, ReverseAction action) {
+    private void doubleReverseCheck(AdvancedSingleLinkedList<Integer> list, Integer[] intArray, ReverseAction action) {
         assertAll(list, intArray);
 
         action.reverse(list);
@@ -161,21 +161,21 @@ public class SingleLinkedListReverseTest extends AbstractSingleLinkedListTest {
     private void doubleReverse(ReverseAction action) {
 
         Integer[] intArray = new Integer[]{0, 1, 4, 656, 213, 11, -34, 43, -1};
-        SingleLinkedList<Integer> list = new SingleLinkedList<Integer>(intArray);
+        AdvancedSingleLinkedList<Integer> list = new AdvancedSingleLinkedList<Integer>(intArray);
 
         doubleReverseCheck(list, intArray, action);
 
         intArray = new Integer[]{};
-        list = new SingleLinkedList<Integer>(intArray);
+        list = new AdvancedSingleLinkedList<Integer>(intArray);
 
         doubleReverseCheck(list, intArray, action);
 
         intArray = new Integer[]{1};
-        list = new SingleLinkedList<Integer>(intArray);
+        list = new AdvancedSingleLinkedList<Integer>(intArray);
 
         doubleReverseCheck(list, intArray, action);
         intArray = new Integer[]{1, null, 3};
-        list = new SingleLinkedList<Integer>(intArray);
+        list = new AdvancedSingleLinkedList<Integer>(intArray);
 
         doubleReverseCheck(list, intArray, action);
     }
