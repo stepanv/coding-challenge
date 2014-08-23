@@ -1,8 +1,8 @@
 package net.uvavru.amazon;
 
 import java.util.Collection;
-import java.util.Collections;
 import java.util.Iterator;
+import java.util.NoSuchElementException;
 
 /**
  * The advanced single linked list data structure providing basic operations which are required
@@ -145,7 +145,7 @@ public class AdvancedSingleLinkedList<T> extends SingleLinkedList<T> implements 
         // O(n*n) complexity .. lets pretend we do not care
 
         if (c == null) {
-            return true;
+            throw new NullPointerException("Argument cannot be null!");
         }
 
         for (Object o : c) {
@@ -160,6 +160,9 @@ public class AdvancedSingleLinkedList<T> extends SingleLinkedList<T> implements 
 
     @Override
     public boolean addAll(Collection<? extends T> c) {
+        if (c == null) {
+            throw new NullPointerException("Argument cannot be null!");
+        }
         if (c == null || c.size() == 0) {
             return false;
         }
@@ -183,8 +186,7 @@ public class AdvancedSingleLinkedList<T> extends SingleLinkedList<T> implements 
     @Override
     public boolean retainAll(Collection<?> c) {
         if (c == null) {
-            clear();
-            return true;
+            throw new NullPointerException("Argument cannot be null!");
         }
 
         Iterator<T> iterator = iterator();
@@ -329,6 +331,7 @@ public class AdvancedSingleLinkedList<T> extends SingleLinkedList<T> implements 
     static class SingleLinkedListIterator<T> implements Iterator<T> {
         private final AdvancedSingleLinkedList<T> list;
         private Node<T> previousNode = null;
+        private Node<T> currentNode = null;
 
         SingleLinkedListIterator(AdvancedSingleLinkedList<T> list) {
             this.list = list;
@@ -341,7 +344,15 @@ public class AdvancedSingleLinkedList<T> extends SingleLinkedList<T> implements 
                 return false;
             }
             if (previousNode == null) {
-                return list.first.next != null;
+                if (currentNode == null) {
+                    return list.first != null;
+                } else {
+                    return currentNode.next != null;
+                }
+            }
+
+            if (previousNode.next == null) {
+                return false;
             }
 
             return previousNode.next.next != null;
@@ -350,21 +361,34 @@ public class AdvancedSingleLinkedList<T> extends SingleLinkedList<T> implements 
         @Override
         public T next() {
             if (list.first == null) {
-                return null;
+                throw new NoSuchElementException("Empty collection");
             }
             if (previousNode == null) {
-                // at the beginning
-                previousNode = list.first;
-                return previousNode.data;
+                if (currentNode == null) {
+                    // at the beginning
+                    // do not move the previous
+                    currentNode = list.first;
+                    return currentNode.data;
+                } else {
+                    previousNode = list.first;
+                    if (previousNode.next == null) {
+                        throw new NoSuchElementException("Already at the end of the collection!");
+                    }
+                    return previousNode.next.data;
+                }
             }
 
             // move to another one
             if (previousNode.next == null) {
+                throw new IllegalStateException("Argh!");
+            }
+            if (previousNode.next.next == null) {
+
                 throw new IllegalStateException("Already at the end of the collection!");
             }
             previousNode = previousNode.next;
 
-            return previousNode.data;
+            return previousNode.next.data;
         }
 
         @Override
@@ -392,7 +416,7 @@ public class AdvancedSingleLinkedList<T> extends SingleLinkedList<T> implements 
             assert list.first != removalNode;
 
             if (removalNode == null) {
-                throw new IllegalStateException("Already at the end of the collection!");
+                throw new NoSuchElementException("Already at the end of the collection!");
             }
 
             if (list.last == removalNode) {
@@ -407,6 +431,30 @@ public class AdvancedSingleLinkedList<T> extends SingleLinkedList<T> implements 
             list.size--;
 
             // do not modify the iterator
+        }
+    }
+
+    /**
+     * Inspired in AbstractCollection
+     *
+     * @return Friendly string
+     */
+    @Override
+    public String toString() {
+        Iterator<T> iterator = iterator();
+        if (!iterator.hasNext()) {
+            return "[]";
+        }
+
+        StringBuilder sb = new StringBuilder();
+        sb.append('[');
+        for (; ; ) {
+            T item = iterator.next();
+            sb.append(item == this ? "(this Collection)" : item);
+            if (!iterator.hasNext()) {
+                return sb.append(']').toString();
+            }
+            sb.append(',').append(' ');
         }
     }
 }
