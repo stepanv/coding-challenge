@@ -63,7 +63,7 @@ public class MOAT {
     @Test
     public void complexAdvancedSingleLinkedListTest() {
 
-        testCollection(new AdvancedSingleLinkedList<Integer>());
+       testCollection(new AdvancedSingleLinkedList<Integer>());
 
     }
 
@@ -619,7 +619,10 @@ public class MOAT {
 
     private static void testCollection(Collection<Integer> c) {
         try { testCollection1(c); }
-        catch (Throwable t) { unexpected(t); }
+        catch (Throwable t) {
+            unexpected(t);
+
+        }
     }
 
     private static void testCollection1(Collection<Integer> c) {
@@ -1088,9 +1091,9 @@ public class MOAT {
     //--------------------- Infrastructure ---------------------------
     static volatile int passed = 0, failed = 0;
     static void pass() { passed++; }
-    static void fail() { failed++; Thread.dumpStack(); }
+    static void fail() { failed++; Thread.dumpStack(); throw new RuntimeException("failed!");}
     static void fail(String msg) { System.out.println(msg); fail(); }
-    static void unexpected(Throwable t) { failed++; t.printStackTrace(); }
+    static void unexpected(Throwable t) { failed++; t.printStackTrace(); throw new RuntimeException(t);}
     static void check(boolean cond) { if (cond) pass(); else fail(); }
     static void equal(Object x, Object y) {
         if (x == null ? y == null : x.equals(y)) pass();

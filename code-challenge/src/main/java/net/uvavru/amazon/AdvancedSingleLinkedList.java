@@ -163,7 +163,7 @@ public class AdvancedSingleLinkedList<T> extends SingleLinkedList<T> implements 
         if (c == null) {
             throw new NullPointerException("Argument cannot be null!");
         }
-        if (c == null || c.size() == 0) {
+        if (c.size() == 0) {
             return false;
         }
         for (T item : c) {
@@ -329,9 +329,18 @@ public class AdvancedSingleLinkedList<T> extends SingleLinkedList<T> implements 
     }
 
     static class SingleLinkedListIterator<T> implements Iterator<T> {
+        /**
+         * The list this iterator iterates over
+         */
         private final AdvancedSingleLinkedList<T> list;
+        /**
+         * Previous node - required for removal
+         */
         private Node<T> previousNode = null;
-        private Node<T> currentNode = null;
+        /**
+         * Whether this iterator is initialized only = not called next()
+         */
+        private boolean initializedOnly = true;
 
         SingleLinkedListIterator(AdvancedSingleLinkedList<T> list) {
             this.list = list;
@@ -344,10 +353,10 @@ public class AdvancedSingleLinkedList<T> extends SingleLinkedList<T> implements 
                 return false;
             }
             if (previousNode == null) {
-                if (currentNode == null) {
+                if (initializedOnly) {
                     return list.first != null;
                 } else {
-                    return currentNode.next != null;
+                    return list.first.next != null;
                 }
             }
 
@@ -364,11 +373,11 @@ public class AdvancedSingleLinkedList<T> extends SingleLinkedList<T> implements 
                 throw new NoSuchElementException("Empty collection");
             }
             if (previousNode == null) {
-                if (currentNode == null) {
+                if (initializedOnly) {
                     // at the beginning
                     // do not move the previous
-                    currentNode = list.first;
-                    return currentNode.data;
+                    initializedOnly = false;
+                    return list.first.data;
                 } else {
                     previousNode = list.first;
                     if (previousNode.next == null) {
@@ -379,11 +388,9 @@ public class AdvancedSingleLinkedList<T> extends SingleLinkedList<T> implements 
             }
 
             // move to another one
-            if (previousNode.next == null) {
-                throw new IllegalStateException("Argh!");
-            }
-            if (previousNode.next.next == null) {
+            assert previousNode.next != null;
 
+            if (previousNode.next.next == null) {
                 throw new IllegalStateException("Already at the end of the collection!");
             }
             previousNode = previousNode.next;
@@ -394,12 +401,13 @@ public class AdvancedSingleLinkedList<T> extends SingleLinkedList<T> implements 
         @Override
         public void remove() {
             if (list.first == null) {
-                // empty list
-                return;
+                throw new IllegalStateException("An empty collection!");
+            }
+            if (initializedOnly) {
+                throw new IllegalStateException("Cannot call remove before next()!");
             }
             if (previousNode == null) {
                 // at the beginning
-
                 // do not modify this iterator
 
                 // modify the list ds
