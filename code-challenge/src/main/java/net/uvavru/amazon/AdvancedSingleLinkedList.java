@@ -1,5 +1,9 @@
 package net.uvavru.amazon;
 
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Iterator;
+
 /**
  * The advanced single linked list data structure providing basic operations which are required
  * especially for testing.
@@ -8,7 +12,7 @@ package net.uvavru.amazon;
  *
  * @param <T> The associated data with this list.
  */
-public class AdvancedSingleLinkedList<T> extends SingleLinkedList<T> {
+public class AdvancedSingleLinkedList<T> extends SingleLinkedList<T> implements Collection<T> {
 
     /**
      * The size of the list
@@ -115,13 +119,8 @@ public class AdvancedSingleLinkedList<T> extends SingleLinkedList<T> {
         node.data = value;
     }
 
-    /**
-     * Adds the value at the end of this list.
-     * If this list is empty, it is initialized with one item.
-     *
-     * @param value the value to add
-     */
-    public void add(T value) {
+    @Override
+    public boolean add(T value) {
         Node<T> node = new Node<T>(value);
 
         if (last == null) {
@@ -137,6 +136,76 @@ public class AdvancedSingleLinkedList<T> extends SingleLinkedList<T> {
         }
 
         size++;
+        return true;
+    }
+
+
+    @Override
+    public boolean containsAll(Collection<?> c) {
+        // O(n*n) complexity .. lets pretend we do not care
+
+        if (c == null) {
+            return true;
+        }
+
+        for (Object o : c) {
+            if (contains(o)) {
+                continue;
+            } else {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    @Override
+    public boolean addAll(Collection<? extends T> c) {
+        if (c == null || c.size() == 0) {
+            return false;
+        }
+        for (T item : c) {
+            this.add(item);
+
+        }
+        return true;
+    }
+
+    @Override
+    public boolean removeAll(Collection<?> c) {
+        // O(n*n) complexity again .. might be better with some heuristics
+        boolean modified = false;
+        for (Object o : c) {
+            modified = remove(o);
+        }
+        return modified;
+    }
+
+    @Override
+    public boolean retainAll(Collection<?> c) {
+        if (c == null) {
+            clear();
+            return true;
+        }
+
+        Iterator<T> iterator = iterator();
+        boolean modified = false;
+
+        while (iterator.hasNext()) {
+            T item = iterator.next();
+            if (c.contains(item)) {
+                continue;
+            }
+            iterator.remove();
+            modified = true;
+        }
+        return modified;
+    }
+
+    @Override
+    public void clear() {
+        size = 0;
+        first = null;
+        last = null;
     }
 
     /**
@@ -146,6 +215,64 @@ public class AdvancedSingleLinkedList<T> extends SingleLinkedList<T> {
      */
     public int size() {
         return size;
+    }
+
+    @Override
+    public boolean isEmpty() {
+        return size == 0;
+    }
+
+    @Override
+    public boolean contains(Object o) {
+        if (o == null) {
+            for (T item : this) {
+                if (item == null) {
+                    return true;
+                }
+            }
+        } else {
+            for (T item : this) {
+                if (o.equals(item)) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    @Override
+    public Iterator<T> iterator() {
+        return new SingleLinkedListIterator<T>(this);
+    }
+
+    @Override
+    public Object[] toArray() {
+        Object[] array = new Object[size];
+        int index = 0;
+        for (T item : this) {
+            array[index++] = item;
+        }
+        return array;
+    }
+
+    @Override
+    @SuppressWarnings("unchecked")
+    public <E> E[] toArray(E[] array) {
+        if (array.length < size) {
+            array = (E[]) java.lang.reflect.Array.newInstance(
+                    array.getClass().getComponentType(), size);
+        }
+        Object[] result = array;
+        int index = 0;
+        for (T item : this) {
+            result[index++] = item;
+        }
+
+        if (array.length > size) {
+            array[size] = null;
+        }
+
+        return array;
     }
 
     /**
@@ -170,6 +297,7 @@ public class AdvancedSingleLinkedList<T> extends SingleLinkedList<T> {
             }
 
             Node<T> previousNode = node(index - 1);
+
             removalNode = previousNode.next;
             previousNode.next = previousNode.next.next;
 
@@ -183,4 +311,102 @@ public class AdvancedSingleLinkedList<T> extends SingleLinkedList<T> {
         return removalNode.data;
     }
 
+    @Override
+    public boolean remove(Object o) {
+        boolean modified = false;
+        Iterator<T> iterator = this.iterator();
+        while (iterator.hasNext()) {
+            T item = iterator.next();
+            if ((o == null && item == null) || (o != null && o.equals(item))) {
+                iterator.remove();
+                modified = true;
+            }
+        }
+
+        return modified;
+    }
+
+    static class SingleLinkedListIterator<T> implements Iterator<T> {
+        private final AdvancedSingleLinkedList<T> list;
+        private Node<T> previousNode = null;
+
+        SingleLinkedListIterator(AdvancedSingleLinkedList<T> list) {
+            this.list = list;
+            previousNode = null;
+        }
+
+        @Override
+        public boolean hasNext() {
+            if (list.first == null) {
+                return false;
+            }
+            if (previousNode == null) {
+                return list.first.next != null;
+            }
+
+            return previousNode.next.next != null;
+        }
+
+        @Override
+        public T next() {
+            if (list.first == null) {
+                return null;
+            }
+            if (previousNode == null) {
+                // at the beginning
+                previousNode = list.first;
+                return previousNode.data;
+            }
+
+            // move to another one
+            if (previousNode.next == null) {
+                throw new IllegalStateException("Already at the end of the collection!");
+            }
+            previousNode = previousNode.next;
+
+            return previousNode.data;
+        }
+
+        @Override
+        public void remove() {
+            if (list.first == null) {
+                // empty list
+                return;
+            }
+            if (previousNode == null) {
+                // at the beginning
+
+                // do not modify this iterator
+
+                // modify the list ds
+                if (list.first == list.last) {
+                    // removing the last one
+                    list.last = null;
+                }
+                list.first = list.first.next;
+                list.size--;
+
+                return;
+            }
+            Node<T> removalNode = previousNode.next;
+            assert list.first != removalNode;
+
+            if (removalNode == null) {
+                throw new IllegalStateException("Already at the end of the collection!");
+            }
+
+            if (list.last == removalNode) {
+                // removing the last node
+                list.last = previousNode;
+            }
+
+            // remove it
+            previousNode.next = previousNode.next.next;
+
+            // modify the ds
+            list.size--;
+
+            // do not modify the iterator
+        }
+    }
 }
