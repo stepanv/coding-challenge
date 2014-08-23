@@ -1,119 +1,471 @@
 package net.uvavru.amazon;
 
+import java.util.Collection;
+import java.util.Iterator;
+import java.util.NoSuchElementException;
+
 /**
- * The core Single Linked List data structure with separated implementation of functionality
- * specified in the Amazon's assignment. The purpose of such extraction is to provide an easy
- * orientation in the core functionality.
+ * The advanced single linked list data structure providing basic operations which are required
+ * especially for testing.
  * <p/>
- * Unless sub-classed, this class does not provide a way to modify the list (except for reverse
- * actions).
- * <p/>
- * This data structure does not intentionally implement any of common <code>java.util</code>
- * collection interfaces because it was not simply an assignment.
+ * Implements Collection and therefore is testable with standard Collection tests
+ * (e.g., from OpenJDK)
  * <p/>
  * Created by stepan on 22.8.2014.
  *
- * @param <T> The type of content to use with this list data structure.
+ * @param <T> The associated data with this list.
  */
-public class SingleLinkedList<T> implements AmazonAssignment {
+public class SingleLinkedList<T> extends SimpleSingleLinkedList<T> implements Collection<T> {
 
     /**
-     * The first Node of the linked list
+     * The size of the list
      */
-    Node<T> first;
-    /**
-     * The last Node of the linked list declared for convenience reasons
-     */
-    Node<T> last;
+    int size = 0;
 
-    @Override
-    public void reverseIteratively() {
-        if (first == null || first.next == null) {
+    /**
+     * Default constructor which creates empty list
+     */
+    public SingleLinkedList() {
+    }
+
+    /**
+     * Creates a linked list from the provided array.
+     *
+     * @param array The array to create single linked list data structure from.
+     */
+    public SingleLinkedList(T[] array) {
+        if (array == null || array.length == 0) {
             return;
         }
 
-        // there are at least 2 nodes
+        // the length of the array is 1 at least
 
+        first = new Node<T>(array[0]);
+        last = first;
         Node previousNode = first;
-        Node currentNode = first.next;
-        previousNode.next = null;
-        last = first;
+        size = 1;
 
-        while (currentNode != null) {
-            Node<T> nextNode = currentNode.next;
-            currentNode.next = previousNode;
+        // use the rest from the array to initialize this list with
+        for (; size < array.length; size++) {
+            last = new Node<T>(array[size]);
+            previousNode.next = last;
 
-            previousNode = currentNode;
-            currentNode = nextNode;
+            previousNode = last;
         }
-
-        first = previousNode;
     }
 
     /**
-     * A helper method to swap the 'pointers' to the first and the last node.
+     * Fetches the node at the given index.
+     * <p/>
+     * If the index is out of bounds, IndexOutOfBoundsException is thrown.
+     * <p/>
+     * Note that the complexity of this method is O(n)
+     *
+     * @param index The index where to get the node.
+     * @return The Node instance (never null)
      */
-    private void swapFirstLast() {
-        Node<T> swap = last;
-        last = first;
-        first = swap;
+    Node<T> node(int index) {
+        if (index >= size || index < 0) {
+            throw new IndexOutOfBoundsException("Index " + index + " greater or equal to the size of list");
+        }
+
+        Node<T> desired = first;
+        for (int i = 0; i < index; i++) {
+            desired = desired.next;
+        }
+        return desired;
+
+    }
+
+    /**
+     * Gets the value at the beginning of this list.
+     *
+     * @return Value or null if empty or associated data is null
+     */
+    public T getFirst() {
+        return first != null ? first.data : null;
+    }
+
+    /**
+     * Gets the value at the end of this list.
+     *
+     * @return Value or null if empty or associated data is null
+     */
+    public T getLast() {
+        return last != null ? last.data : null;
+    }
+
+    /**
+     * Gets the value at the specified index.
+     * <p/>
+     * If index is out of bounds, IndexOutOfBoundsException is thrown.
+     *
+     * @param index
+     * @return
+     */
+    public T get(int index) {
+        Node<T> node = node(index);
+
+        return node != null ? node.data : null;
+    }
+
+    /**
+     * Sets the value at the specified index.
+     * <p/>
+     * If index is out of bounds, IndexOutOfBoundsException is thrown.
+     *
+     * @param index where to set the value
+     * @param value value to set
+     */
+    public void set(int index, T value) {
+        Node<T> node = node(index);
+        node.data = value;
     }
 
     @Override
-    public void reverseRecursively() {
-        if (first == null || first == last) {
-            return;
+    public boolean add(T value) {
+        Node<T> node = new Node<T>(value);
+
+        if (last == null) {
+            assert first == null;
+
+            first = node;
+            last = first;
+        } else {
+            assert first != null;
+
+            last.next = node;
+            last = node;
         }
 
-        swapFirstLast();
+        size++;
+        return true;
+    }
 
-        reverse(last);
 
-        // fix the last
-        last.next = null;
+    @Override
+    public boolean containsAll(Collection<?> c) {
+        // O(n*n) complexity .. lets pretend we do not care
+
+        if (c == null) {
+            throw new NullPointerException("Argument cannot be null!");
+        }
+
+        for (Object o : c) {
+            if (contains(o)) {
+                continue;
+            } else {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    @Override
+    public boolean addAll(Collection<? extends T> c) {
+        if (c == null) {
+            throw new NullPointerException("Argument cannot be null!");
+        }
+        if (c.size() == 0) {
+            return false;
+        }
+        for (T item : c) {
+            this.add(item);
+
+        }
+        return true;
+    }
+
+    @Override
+    public boolean removeAll(Collection<?> c) {
+        // O(n*n) complexity again .. might be better with some heuristics
+        boolean modified = false;
+        for (Object o : c) {
+            modified = remove(o);
+        }
+        return modified;
+    }
+
+    @Override
+    public boolean retainAll(Collection<?> c) {
+        if (c == null) {
+            throw new NullPointerException("Argument cannot be null!");
+        }
+
+        Iterator<T> iterator = iterator();
+        boolean modified = false;
+
+        while (iterator.hasNext()) {
+            T item = iterator.next();
+            if (c.contains(item)) {
+                continue;
+            }
+            iterator.remove();
+            modified = true;
+        }
+        return modified;
+    }
+
+    @Override
+    public void clear() {
+        size = 0;
+        first = null;
+        last = null;
     }
 
     /**
-     * The recursion method itself.
+     * Gets the size of this list.
+     *
+     * @return the size
+     */
+    public int size() {
+        return size;
+    }
+
+    @Override
+    public boolean isEmpty() {
+        return size == 0;
+    }
+
+    @Override
+    public boolean contains(Object o) {
+        if (o == null) {
+            for (T item : this) {
+                if (item == null) {
+                    return true;
+                }
+            }
+        } else {
+            for (T item : this) {
+                if (o.equals(item)) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    @Override
+    public Iterator<T> iterator() {
+        return new SingleLinkedListIterator<T>(this);
+    }
+
+    @Override
+    public Object[] toArray() {
+        Object[] array = new Object[size];
+        int index = 0;
+        for (T item : this) {
+            array[index++] = item;
+        }
+        return array;
+    }
+
+    @Override
+    @SuppressWarnings("unchecked")
+    public <E> E[] toArray(E[] array) {
+        if (array.length < size) {
+            array = (E[]) java.lang.reflect.Array.newInstance(
+                    array.getClass().getComponentType(), size);
+        }
+        Object[] result = array;
+        int index = 0;
+        for (T item : this) {
+            result[index++] = item;
+        }
+
+        if (array.length > size) {
+            array[size] = null;
+        }
+
+        return array;
+    }
+
+    /**
+     * Removes the value at the given index.
      * <p/>
-     * The idea of this recursion is at first to iterate by using recursion to the last pair of Nodes
-     * and then to make the next of the current one point to the current one.
+     * If index is out of bounds, IndexOutOfBoundsException is thrown.
      *
-     * @param node The node to which the next node should point to.
+     * @param index Where to remove the value in this list.
      */
-    private void reverse(Node<T> node) {
-        if (node.next.next != null) {
-            reverse(node.next);
+    public T remove(int index) {
+        Node<T> removalNode;
+        if (index == 0 && size > 0) {
+
+            // just move to the next
+            removalNode = first;
+            first = first.next;
+
+        } else {
+
+            if (index >= size || index < 0) {
+                throw new IndexOutOfBoundsException("Index " + index + " greater or equal to the size of list");
+            }
+
+            Node<T> previousNode = node(index - 1);
+
+            removalNode = previousNode.next;
+            previousNode.next = previousNode.next.next;
+
+            if (index == size - 1) {
+                // removing the last node
+                last = previousNode;
+            }
         }
 
-        // next of the next one should point at current node
-        node.next.next = node;
+        size--;
+        return removalNode.data;
+    }
+
+    @Override
+    public boolean remove(Object o) {
+        boolean modified = false;
+        Iterator<T> iterator = this.iterator();
+        while (iterator.hasNext()) {
+            T item = iterator.next();
+            if ((o == null && item == null) || (o != null && o.equals(item))) {
+                iterator.remove();
+                modified = true;
+            }
+        }
+
+        return modified;
+    }
+
+    static class SingleLinkedListIterator<T> implements Iterator<T> {
+        /**
+         * The list this iterator iterates over
+         */
+        private final SingleLinkedList<T> list;
+        /**
+         * Previous node - required for removal
+         */
+        private Node<T> previousNode = null;
+        /**
+         * Whether this iterator is initialized only = not called next()
+         */
+        private boolean initializedOnly = true;
+
+        SingleLinkedListIterator(SingleLinkedList<T> list) {
+            this.list = list;
+            previousNode = null;
+        }
+
+        @Override
+        public boolean hasNext() {
+            if (list.first == null) {
+                return false;
+            }
+            if (previousNode == null) {
+                if (initializedOnly) {
+                    return list.first != null;
+                } else {
+                    return list.first.next != null;
+                }
+            }
+
+            if (previousNode.next == null) {
+                return false;
+            }
+
+            return previousNode.next.next != null;
+        }
+
+        @Override
+        public T next() {
+            if (list.first == null) {
+                throw new NoSuchElementException("Empty collection");
+            }
+            if (previousNode == null) {
+                if (initializedOnly) {
+                    // at the beginning
+                    // do not move the previous
+                    initializedOnly = false;
+                    return list.first.data;
+                } else {
+                    previousNode = list.first;
+                    if (previousNode.next == null) {
+                        throw new NoSuchElementException("Already at the end of the collection!");
+                    }
+                    return previousNode.next.data;
+                }
+            }
+
+            // move to another one
+            assert previousNode.next != null;
+
+            if (previousNode.next.next == null) {
+                throw new IllegalStateException("Already at the end of the collection!");
+            }
+            previousNode = previousNode.next;
+
+            return previousNode.next.data;
+        }
+
+        @Override
+        public void remove() {
+            if (list.first == null) {
+                throw new IllegalStateException("An empty collection!");
+            }
+            if (initializedOnly) {
+                throw new IllegalStateException("Cannot call remove before next()!");
+            }
+            if (previousNode == null) {
+                // at the beginning
+                // do not modify this iterator
+
+                // modify the list ds
+                if (list.first == list.last) {
+                    // removing the last one
+                    list.last = null;
+                }
+                list.first = list.first.next;
+                list.size--;
+
+                return;
+            }
+            Node<T> removalNode = previousNode.next;
+            assert list.first != removalNode;
+
+            if (removalNode == null) {
+                throw new NoSuchElementException("Already at the end of the collection!");
+            }
+
+            if (list.last == removalNode) {
+                // removing the last node
+                list.last = previousNode;
+            }
+
+            // remove it
+            previousNode.next = previousNode.next.next;
+
+            // modify the ds
+            list.size--;
+
+            // do not modify the iterator
+        }
     }
 
     /**
-     * Package local (and therefore testable) class that represents a single node in the
-     * Single Linked List data structure.
+     * Inspired in AbstractCollection
      *
-     * @param <T> The associated data with this node (as well as with the whole list).
+     * @return Friendly string
      */
-    static class Node<T> {
-        /**
-         * The next node, can be null
-         */
-        Node<T> next;
-        /**
-         * Associated data
-         */
-        T data;
-
-        /**
-         * Creates the node.
-         *
-         * @param data The associated data.
-         */
-        public Node(T data) {
-            this.data = data;
+    @Override
+    public String toString() {
+        Iterator<T> iterator = iterator();
+        if (!iterator.hasNext()) {
+            return "[]";
         }
 
+        StringBuilder sb = new StringBuilder();
+        sb.append('[');
+        for (; ; ) {
+            T item = iterator.next();
+            sb.append(item == this ? "(this Collection)" : item);
+            if (!iterator.hasNext()) {
+                return sb.append(']').toString();
+            }
+            sb.append(',').append(' ');
+        }
     }
 }

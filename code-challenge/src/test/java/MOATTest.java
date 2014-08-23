@@ -50,7 +50,7 @@
  * simultaneously test all other implementations.
  */
 
-import net.uvavru.amazon.AdvancedSingleLinkedList;
+import net.uvavru.amazon.SingleLinkedList;
 import org.junit.Test;
 
 import java.io.*;
@@ -58,12 +58,12 @@ import java.util.*;
 import java.util.concurrent.*;
 import static java.util.Collections.*;
 
-public class MOAT {
+public class MOATTest {
 
     @Test
     public void complexAdvancedSingleLinkedListTest() {
 
-       testCollection(new AdvancedSingleLinkedList<Integer>());
+       testCollection(new SingleLinkedList<Integer>());
 
     }
 

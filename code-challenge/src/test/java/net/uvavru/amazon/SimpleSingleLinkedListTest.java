@@ -12,7 +12,7 @@ import static org.junit.Assert.*;
  * <p/>
  * Created by stepan on 22.8.2014.
  */
-public class SingleLinkedListTest extends AbstractSingleLinkedListTest {
+public class SimpleSingleLinkedListTest extends AbstractSingleLinkedListTest {
 
     /**
      * Tests a construction test of the data structure by using arrays.
@@ -20,15 +20,15 @@ public class SingleLinkedListTest extends AbstractSingleLinkedListTest {
     @Test
     public void constructionTest() {
         Integer[] intArray = new Integer[]{0, 1, 2};
-        AdvancedSingleLinkedList<Integer> list = new AdvancedSingleLinkedList<Integer>(intArray);
+        SingleLinkedList<Integer> list = new SingleLinkedList<Integer>(intArray);
         assertAll(list, intArray);
 
         intArray = new Integer[]{};
-        list = new AdvancedSingleLinkedList<Integer>(intArray);
+        list = new SingleLinkedList<Integer>(intArray);
         assertAll(list, intArray);
 
         intArray = new Integer[]{0};
-        list = new AdvancedSingleLinkedList<Integer>(intArray);
+        list = new SingleLinkedList<Integer>(intArray);
         assertAll(list, intArray);
 
     }
@@ -39,7 +39,7 @@ public class SingleLinkedListTest extends AbstractSingleLinkedListTest {
     @Test
     public void iterativeConstructionTest() {
         Integer[] intArray = new Integer[]{0, 1, 2};
-        AdvancedSingleLinkedList<Integer> list = new AdvancedSingleLinkedList<Integer>();
+        SingleLinkedList<Integer> list = new SingleLinkedList<Integer>();
         list.add(0);
         assertEquals(list.size, 1);
         assertEquals((int) list.last.data, 0);
@@ -67,7 +67,7 @@ public class SingleLinkedListTest extends AbstractSingleLinkedListTest {
      */
     @Test
     public void zeroLength() {
-        AdvancedSingleLinkedList<Integer> list = new AdvancedSingleLinkedList<Integer>();
+        SingleLinkedList<Integer> list = new SingleLinkedList<Integer>();
 
         assertNull(list.getLast());
         assertNull(list.getFirst());
@@ -81,7 +81,7 @@ public class SingleLinkedListTest extends AbstractSingleLinkedListTest {
      */
     @Test
     public void oneLength() {
-        AdvancedSingleLinkedList<Integer> list = new AdvancedSingleLinkedList<Integer>(new Integer[]{1});
+        SingleLinkedList<Integer> list = new SingleLinkedList<Integer>(new Integer[]{1});
 
         assertEquals(list.getFirst(), list.getLast());
 
@@ -99,7 +99,7 @@ public class SingleLinkedListTest extends AbstractSingleLinkedListTest {
      */
     @Test
     public void twoLength() {
-        AdvancedSingleLinkedList<Integer> list = new AdvancedSingleLinkedList<Integer>(new Integer[]{1, 2});
+        SingleLinkedList<Integer> list = new SingleLinkedList<Integer>(new Integer[]{1, 2});
 
         assertNotEquals(list.getFirst(), list.getLast());
 
@@ -123,7 +123,7 @@ public class SingleLinkedListTest extends AbstractSingleLinkedListTest {
     public void complexPlayTest() {
         // create the array
         Integer[] intArray = new Integer[]{0, 1};
-        AdvancedSingleLinkedList<Integer> list = new AdvancedSingleLinkedList<Integer>(intArray);
+        SingleLinkedList<Integer> list = new SingleLinkedList<Integer>(intArray);
         assertAll(list, intArray);
 
         // change the first item
@@ -168,7 +168,7 @@ public class SingleLinkedListTest extends AbstractSingleLinkedListTest {
     public void removeTest() {
         // create the array
         Integer[] intArray = new Integer[]{0, 1};
-        AdvancedSingleLinkedList<Integer> list = new AdvancedSingleLinkedList<Integer>(intArray);
+        SingleLinkedList<Integer> list = new SingleLinkedList<Integer>(intArray);
         assertAll(list, intArray);
 
         // remove the first item
@@ -193,7 +193,7 @@ public class SingleLinkedListTest extends AbstractSingleLinkedListTest {
     public void remove2Test() {
         // create the array
         Integer[] intArray = new Integer[]{0, 1, 2};
-        AdvancedSingleLinkedList<Integer> list = new AdvancedSingleLinkedList<Integer>(intArray);
+        SingleLinkedList<Integer> list = new SingleLinkedList<Integer>(intArray);
         assertAll(list, intArray);
 
         // remove the middle item

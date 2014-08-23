@@ -13,7 +13,7 @@ import static org.junit.Assert.assertNull;
  * <p/>
  * Created by stepan on 22.8.2014.
  */
-public class SingleLinkedListReverseTest extends AbstractSingleLinkedListTest {
+public class SimpleSingleLinkedListReverseTest extends AbstractSingleLinkedListTest {
 
     /**
      * An abstraction for reverse action so that the test code is not unnecessarily duplicated.
@@ -21,7 +21,7 @@ public class SingleLinkedListReverseTest extends AbstractSingleLinkedListTest {
      * @param <T>
      */
     private static interface ReverseAction<T> {
-        void reverse(SingleLinkedList<T> list);
+        void reverse(SimpleSingleLinkedList<T> list);
     }
 
     /**
@@ -32,7 +32,7 @@ public class SingleLinkedListReverseTest extends AbstractSingleLinkedListTest {
     private static class ReverseIterativelyAction<T> implements ReverseAction<T> {
 
         @Override
-        public void reverse(SingleLinkedList<T> list) {
+        public void reverse(SimpleSingleLinkedList<T> list) {
             list.reverseIteratively();
         }
     }
@@ -45,7 +45,7 @@ public class SingleLinkedListReverseTest extends AbstractSingleLinkedListTest {
     private static class ReverseRecursivelyAction<T> implements ReverseAction<T> {
 
         @Override
-        public void reverse(SingleLinkedList<T> list) {
+        public void reverse(SimpleSingleLinkedList<T> list) {
             list.reverseRecursively();
         }
     }
@@ -72,7 +72,7 @@ public class SingleLinkedListReverseTest extends AbstractSingleLinkedListTest {
      * @param action The reverse action
      */
     private void simpleReverse(ReverseAction action) {
-        AdvancedSingleLinkedList<Integer> list = new AdvancedSingleLinkedList<Integer>();
+        SingleLinkedList<Integer> list = new SingleLinkedList<Integer>();
         list.reverseIteratively();
 
         list.add(1);
@@ -124,7 +124,7 @@ public class SingleLinkedListReverseTest extends AbstractSingleLinkedListTest {
      * @param intArray An array that corresponds with the list
      * @param action   The reverse action
      */
-    private void doubleReverseCheck(AdvancedSingleLinkedList<Integer> list, Integer[] intArray, ReverseAction action) {
+    private void doubleReverseCheck(SingleLinkedList<Integer> list, Integer[] intArray, ReverseAction action) {
         assertAll(list, intArray);
 
         action.reverse(list);
@@ -161,21 +161,21 @@ public class SingleLinkedListReverseTest extends AbstractSingleLinkedListTest {
     private void doubleReverse(ReverseAction action) {
 
         Integer[] intArray = new Integer[]{0, 1, 4, 656, 213, 11, -34, 43, -1};
-        AdvancedSingleLinkedList<Integer> list = new AdvancedSingleLinkedList<Integer>(intArray);
+        SingleLinkedList<Integer> list = new SingleLinkedList<Integer>(intArray);
 
         doubleReverseCheck(list, intArray, action);
 
         intArray = new Integer[]{};
-        list = new AdvancedSingleLinkedList<Integer>(intArray);
+        list = new SingleLinkedList<Integer>(intArray);
 
         doubleReverseCheck(list, intArray, action);
 
         intArray = new Integer[]{1};
-        list = new AdvancedSingleLinkedList<Integer>(intArray);
+        list = new SingleLinkedList<Integer>(intArray);
 
         doubleReverseCheck(list, intArray, action);
         intArray = new Integer[]{1, null, 3};
-        list = new AdvancedSingleLinkedList<Integer>(intArray);
+        list = new SingleLinkedList<Integer>(intArray);
 
         doubleReverseCheck(list, intArray, action);
     }
